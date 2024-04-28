@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { ComicsBooks } from "src/entities/comicsbooks.entity";
+import { ComicsBooks } from "src/models/comicsbooks.model";
+
+
 
 @Injectable()
 export class ComicsService {
