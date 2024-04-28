@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /build
-/info-importante
+/info-importante.txt
 
 # Logs
 logs

@@ -1,33 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Character } from 'src/entities/character.entity'
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CharacterService {
-    constructor(
-        @InjectRepository(Character)
-        private characterRepository: Repository<Character>
-    ) { }
+  constructor(@InjectModel(Character.name) private readonly characterModel: Model<Character>) {}
 
-    async findAll(): Promise<Character[]> {
-        return this.characterRepository.find();
-    }
+  async findAll(): Promise<Character[]> {
+    return await this.characterModel.find().exec();
+  }
 
-    async findOne(id: number): Promise<Character> {
-        return this.characterRepository.findOne(id);
-    }
+  async findById(id: number): Promise<Character | null> {
+    return await this.characterModel.findById(id).exec();
+  }
 
-    async create(character: Character): Promise<Character> {
-        return this.characterRepository.save(character);
-    }
+  async create(character: Character): Promise<Character> {
+    const newCharacter = new this.characterModel(character);
+    return await newCharacter.save();
+  }
 
-    async update(id: number, character: Character): Promise<Character> {
-        await this.characterRepository.update(id, character);
-        return this.characterRepository.findOne(id);
-    }
+  async update(id: number, character: Character): Promise<Character | null> {
+    return await this.characterModel.findByIdAndUpdate(id, character, { new: true });
+  }
 
-    async remove(id: number): Promise<void> {
-        await this.characterRepository.delete(id);
-    }
+  async delete(id: number): Promise<void> {
+    await this.characterModel.findByIdAndDelete(id).exec();
+  }
 }
